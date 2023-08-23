@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour
 
     float xRotation = 0f;
 
+    [Header("Mobile Controller")]
+    public FixedJoystick fixedJoystick1;
+    public FixedJoystick fixedJoystick2;
+
     void Awake()
     { 
         controller = GetComponent<CharacterController>();
@@ -37,8 +41,8 @@ public class PlayerController : MonoBehaviour
         input = playerInput.Main;
         AssignInputs();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void Update()
@@ -53,16 +57,22 @@ public class PlayerController : MonoBehaviour
     }
 
     void FixedUpdate() 
-    { MoveInput(input.Movement.ReadValue<Vector2>()); }
+    {
+        MoveInput(input.Movement.ReadValue<Vector2>());
+      }
 
     void LateUpdate() 
-    { LookInput(input.Look.ReadValue<Vector2>()); }
+    {
+        LookInput(input.Look.ReadValue<Vector2>());
+      }
 
     void MoveInput(Vector2 input)
     {
         Vector3 moveDirection = Vector3.zero;
-        moveDirection.x = input.x;
-        moveDirection.z = input.y;
+        moveDirection.x = fixedJoystick1.Horizontal;
+        moveDirection.z = fixedJoystick1.Vertical;
+        //moveDirection.x = input.x;
+        //moveDirection.z = input.y;
 
         controller.Move(transform.TransformDirection(moveDirection) * moveSpeed * Time.deltaTime);
         _PlayerVelocity.y += gravity * Time.deltaTime;
@@ -73,8 +83,10 @@ public class PlayerController : MonoBehaviour
 
     void LookInput(Vector3 input)
     {
-        float mouseX = input.x;
-        float mouseY = input.y;
+        //float mouseX = input.x;
+        //float mouseY = input.y;
+        float mouseX = fixedJoystick2.Horizontal;
+        float mouseY = fixedJoystick2.Vertical;
 
         xRotation -= (mouseY * Time.deltaTime * sensitivity);
         xRotation = Mathf.Clamp(xRotation, -80, 80);
@@ -194,6 +206,8 @@ public class PlayerController : MonoBehaviour
 
             if(hit.transform.TryGetComponent<Enemy_1>(out Enemy_1 T))
             { T.TakeDamage(attackDamage); }
+            if (hit.transform.TryGetComponent<Enemy_2>(out Enemy_2 A))
+            { A.TakeDamage(attackDamage); }
         } 
     }
 
@@ -203,6 +217,6 @@ public class PlayerController : MonoBehaviour
         audioSource.PlayOneShot(hitSound);
 
         GameObject GO = Instantiate(hitEffect, pos, Quaternion.identity);
-        Destroy(GO, 20);
+        Destroy(GO, 2);
     }
 }
