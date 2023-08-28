@@ -201,7 +201,9 @@ public class PlayerController : MonoBehaviour
     void AttackRaycast()
     {
         if(Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
-        { 
+        {
+            Debug.Log("Check 6");
+            Debug.DrawRay(cam.transform.position, cam.transform.forward * attackDistance, Color.red, 1f);
             HitTarget(hit.point);
 
             if(hit.transform.TryGetComponent<Enemy_1>(out Enemy_1 T))

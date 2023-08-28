@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Spawn_Waves : MonoBehaviour
 {
@@ -31,9 +32,17 @@ public class Spawn_Waves : MonoBehaviour
             {
                 GameObject enemyPrefab = enemyTypes[currentWave % 2];
                 GameObject enemy_Spawn = Instantiate(enemyPrefab, spawnPoints[i].position, Quaternion.identity);
-                if (enemy_Spawn.GetComponent<Enemy_1>()) { enemy_Spawn.GetComponent<Enemy_1>().Player = player; }
-                if (enemy_Spawn.GetComponent<Enemy_2>()) { enemy_Spawn.GetComponent<Enemy_2>().tower = tower; }
-                //enemy_Spawn.GetComponent<Enemy_2>().tower = checking;
+                if (enemy_Spawn.GetComponent<Enemy_1>())
+                {
+                    enemy_Spawn.GetComponent<Enemy_1>().player = player;
+                    enemy_Spawn.GetComponent<Enemy_1>().enemy_Ai.speed = Random.Range(1, 8);
+                }
+                if (enemy_Spawn.GetComponent<Enemy_2>())
+                {
+                    enemy_Spawn.GetComponent<Enemy_2>().tower = tower;
+                    enemy_Spawn.GetComponent<Enemy_2>().enemy_2_Ai.speed = Random.Range(1, 8);
+                }
+
                 yield return new WaitForSeconds(0.5f);
             }
         }
